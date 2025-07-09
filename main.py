@@ -18,18 +18,18 @@ def start_nicegui():
     # 启动 NiceGUI 服务器，但不自动打开浏览器
     ui.run(
         port=43127,
-        reload=False,
-        show=False  # 不自动打开浏览器
+        # reload=False,
+        # show=False  # 不自动打开浏览器
     )
 
-def start_gui():
-    # 创建 webview 窗口
-    webview.create_window('厂内工具箱', 'http://localhost:43127', width=1200, height=800)
-    webview.start()
+# def start_gui():
+#     # 创建 webview 窗口
+#     webview.create_window('厂内工具箱', 'http://localhost:43127', width=1200, height=800)
+#     webview.start()
 
 if __name__ == '__main__':
-    # 启动 NiceGUI 服务器线程
-    threading.Thread(target=start_nicegui, daemon=True).start()
-
-    # 启动 pywebview GUI
-    start_gui()
+    # # 启动 NiceGUI 服务器线程
+    # threading.Thread(target=start_nicegui, daemon=True).start()
+    #
+    # # 启动 pywebview GUI
+    start_nicegui()
