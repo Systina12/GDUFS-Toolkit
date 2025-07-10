@@ -4,8 +4,7 @@ from nicegui.functions.navigate import navigate
 from core import auth
 from core.user import get_user_info
 from core.auth import auto_reload
-from core.session import session
-from core.auth import login_flag
+
 
 from utils.credential import set_auto_login_flag
 
@@ -48,6 +47,6 @@ def show_welcome():
             ui.label('📚 功能导航').classes('text-xl font-semibold text-gray-800 mb-4')
 
             with ui.row().classes('justify-center gap-4 flex-wrap'):
-                ui.button('📄 课表查询', on_click=lambda: navigate.to('/schedule')).classes('w-40 h-14 text-lg')
+                ui.button('📄 temp', on_click=lambda: navigate.to('/schedule')).classes('w-40 h-14 text-lg')
                 ui.button('📚 成绩查询', on_click=lambda: navigate.to('/grades')).classes('w-40 h-14 text-lg')
-                ui.button('🗓️ 选课系统', on_click=lambda: navigate.to('/course')).classes('w-40 h-14 text-lg')
+                ui.button('🗓️ 课表查询', on_click=lambda: navigate.to('/course')).classes('w-40 h-14 text-lg')

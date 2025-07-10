@@ -2,6 +2,7 @@ from nicegui import ui
 from core.auth import login
 from utils.credential import load_credentials, save_credentials, get_auto_login_flag, set_auto_login_flag
 from nicegui.functions.navigate import navigate
+from core.cache import set_cache_flag,get_cache_flag
 
 def show_login_page():
     # 背景图层，覆盖整个页面
@@ -22,10 +23,18 @@ def show_login_page():
             saved_username, saved_password = load_credentials()
             username_input = ui.input('学号 / 用户名', value=saved_username).props('outlined').classes('mb-4 w-full')
             password_input = ui.input('密码', value=saved_password).props('outlined type=password').classes('mb-4 w-full')
-            remember_password = ui.checkbox('记住密码').classes('mb-2')
-            auto_login = ui.checkbox('自动登录').classes('mb-4')
+            with ui.row().classes('items-center mb-2'):
+                remember_password = ui.checkbox('记住密码').classes()
+                ui.tooltip('勾选后账号密码会被保存在本地，下次登录时自动填充')
+            with ui.row().classes('items-center mb-2'):
+                auto_login = ui.checkbox('自动登录').classes()
+                ui.tooltip('勾选后下次启动软件时将自动登录')
+            with ui.row().classes('items-center mb-2'):
+                use_cache = ui.checkbox('使用缓存加速访问', value=get_cache_flag()).classes()
+                ui.tooltip('一般在校园网内无需启用，外网访问缓慢时才需要开启。开启后会将资源和部分查询结果存在本地，经过校验后直接输出，减少网络需求。')
 
-            status_label = ui.label('').classes('text-red text-sm mb-4 text-center')
+
+            status_label = ui.label('').classes('text-red text-sm mb-2 text-center')
 
             # 自动登录函数，必须放在 status_label 定义之后！
             def autoLogin():
@@ -64,6 +73,8 @@ def show_login_page():
                         save_credentials(username, password)
                     if auto_login.value:
                         set_auto_login_flag(True)
+
+                    set_cache_flag(use_cache.value)
 
                     navigate.to('/welcome')
                 else:

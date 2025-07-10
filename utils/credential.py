@@ -4,7 +4,8 @@ import os
 DEFAULT_CONFIG = {
     "username": "",
     "password": "",
-    "autoLogin": 0
+    "autoLogin": 0,
+    'use_cache':0
 }
 CONFIG_FILE = "config.json"
 

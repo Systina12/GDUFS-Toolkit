@@ -5,12 +5,10 @@ from .session import session, url
 def get_user_info():
     headers = {
         'Cache-Control': 'max-age=0',
-        'Sec-Ch-Ua': '',
         'Sec-Ch-Ua-Mobile': '?0',
-        'Sec-Ch-Ua-Platform': '""',
         'Upgrade-Insecure-Requests': '1',
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.127 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-Mode': 'navigate',
@@ -20,7 +18,7 @@ def get_user_info():
     }
 
     page_url = f'{url}/framework/xsMain.jsp'
-    response = session.get(page_url, headers=headers)
+    response = session.get(page_url, headers=headers,verify=False)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     target_div = soup.find('div', id='Top1_divLoginName', class_='Nsb_top_menu_nc')
