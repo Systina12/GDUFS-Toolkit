@@ -4,6 +4,7 @@ from core import auth
 from core.auth import auto_reload
 from core.course import get_course
 from core.user import get_user_info
+from pages.footer import add_footer
 
 
 def generate_semesters():
@@ -33,17 +34,7 @@ def show_course():
 
     with ui.column().classes('w-full items-center p-4'):
         # 顶部标题 + 返回按钮
-        with ui.row().classes('w-full justify-between items-center mb-4'):
-            ui.label('📘 我的课程表').classes('text-3xl font-bold text-blue-700')
-            ui.button('返回首页', on_click=lambda: ui.navigate.to('/welcome')).classes('text-md')
 
-        semester_select = ui.select(
-            options=generate_semesters(),
-            label='选择学年学期',
-            value=None,
-        ).classes('w-48')
-
-        table_area = ui.column().classes('w-full mt-4')
 
         def render_table(course_list, unarrange_course):
             table = [[[] for _ in range(7)] for _ in range(max_sections)]
@@ -59,7 +50,7 @@ def show_course():
                         table[sec - 1][weekday - 1].append(course)
 
             def show_detail(course):
-                with ui.dialog().classes('w-96') as dialog, ui.card():
+                with ui.dialog().classes('fixed inset-0 flex items-center justify-center') as dialog, ui.card().classes('w-96'):
                     ui.label('📘 课程详情').classes('text-lg font-bold mb-2')
                     for key, value in course.items():
                         ui.label(f'{key}: {value}')
@@ -69,7 +60,8 @@ def show_course():
             table_area.clear()
             with table_area:
                 if not course_list:
-                    ui.label('🙈 暂无课程信息').classes('text-gray-500 text-lg mt-2')
+                    with ui.row().classes('w-full justify-center'):
+                        ui.label('🙈 暂无课程信息').classes('text-gray-500 text-lg mt-2')
                     return
 
                 with ui.element('table').classes(
@@ -111,10 +103,24 @@ def show_course():
                         ui.html(f'<b>未安排时间课程：</b> {unarrange_course}')
 
         # 查询按钮
-        ui.button(
-            '查询',
-            on_click=lambda: render_table(*get_course(semester_select.value))
-        ).classes('mt-2')
+        with ui.row().classes('w-full justify-between items-center mb-4'):
+            ui.label('📘 我的课程表').classes('text-3xl font-bold text-blue-700')
+            ui.button('返回首页', on_click=lambda: ui.navigate.to('/welcome')).classes('text-md')
+
+        with ui.row().classes('w-full justify-between items-center mb-4'):
+            semester_select = ui.select(
+                options=generate_semesters(),
+                label='选择学年学期',
+                value=None,
+            ).classes('w-48')
+            ui.button(
+                '查询',
+                on_click=lambda: render_table(*get_course(semester_select.value))
+            ).classes('mt-2')
+
+        table_area = ui.column().classes('w-full mt-4')
 
         # 初始渲染空表格
         render_table([],'')
+
+        add_footer()

@@ -22,7 +22,6 @@ def get_course(semester):
 
     if semester != None:
         xnxq01id = semester.split('-')[0] + '-' + str(int(semester.split('-')[0]) + 1) +'-'+ semester.split('-')[1]
-        print(xnxq01id)
     else:
         return []
     data = {

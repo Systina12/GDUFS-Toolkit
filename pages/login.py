@@ -1,5 +1,6 @@
 from nicegui import ui
 from core.auth import login
+from pages.footer import add_footer
 from utils.credential import load_credentials, save_credentials, get_auto_login_flag, set_auto_login_flag
 from nicegui.functions.navigate import navigate
 from core.cache import set_cache_flag,get_cache_flag
@@ -88,3 +89,5 @@ def show_login_page():
             # 页面加载完再判断是否自动登录（放在按钮之后）
             if get_auto_login_flag():
                 autoLogin()
+
+    add_footer()

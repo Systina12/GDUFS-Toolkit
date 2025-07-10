@@ -7,7 +7,6 @@ hostname = "jxgl.gdufs.edu.cn"
 
 # 手动解析 IPv4 地址
 ip_address = socket.gethostbyname(hostname)
-print("解析到的 IP：", ip_address)
 
 url = f"https://{ip_address}/jsxsd"
 session = requests.Session()

@@ -2,6 +2,8 @@ import re
 from bs4 import BeautifulSoup
 from .session import session, url
 from core.cache import get_cache_flag, set_cache_flag, save_grades_cache, get_grades_cache
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 def calc_gpa(score: float) -> float:
     score = float(score)
@@ -112,6 +114,8 @@ def check():
 
 
     # 保存新缓存
-    save_grades_cache(results)
+    executor = ThreadPoolExecutor()
+    # 在 check 函数中异步调用保存函数
+    asyncio.get_event_loop().run_in_executor(executor, save_grades_cache, results)
 
     return results, gpa_text
