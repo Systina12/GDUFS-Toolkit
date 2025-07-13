@@ -10,11 +10,12 @@
 
 也许你也好奇过，为啥查不到平时成绩？外语外贸通是什么来的？是官方的吗？其实一切的问题都出在广外的教务系统上，本来应该点一下成绩数字就展开的平时成绩窗口，因为代码过于老旧，在新的浏览器上已经用不了了，可是，又有谁还在用IE？
 
-
-
 所以这个项目诞生了。
 
 **这是一个为广外学子设计的工具箱，旨在自动化实现教务上高频使用的功能**
+
+[最新Release下载链接](https://github.com/Systina12/GDUFS-Toolkit/releases/latest)
+
 
 基于 `requests` 和 `ddddocr` 实现了自动登录和查询功能，结合 `NiceGUI` 与 `PyWebview` 构建了简洁友好的图形用户界面。
 
@@ -31,3 +32,41 @@
 ### 课表查询
 
 普普通通的功能，做了个比教务好看点的UI，按学年-学期查询课程表并显示，点击课程可以展示课程详情。
+
+## 使用说明
+
+### 直接食用
+
+在这里下载打包好的最新版本[最新Release下载链接](https://github.com/Systina12/GDUFS-Toolkit/releases/latest)
+
+**注意！**程序会在同一个目录下生成`config.json`用于存储配置和缓存
+
+### 自行打包
+
+##### 用git或者在仓库网页上下载代码到本地
+
+```
+git clone https://github.com/Systina12/GDUFS-Toolkit.git
+```
+
+##### 使用requirements.txt配置依赖并安装`PyInstaller`
+
+```
+pip install -r requirements.txt
+pip install pyinstaller
+```
+
+如果你使用`uv`或者其他工具进行项目管理，请使用你的工具对应的命令
+
+##### 修改`pack.spec`
+
+将data里的路径改为你的`nicegui`和`common.onnx`所在目录
+
+如果你使用虚拟环境，这两个路径应该是`.venv/Lib/site-package/nicegui`和`.venv/Lib/site-package/ddddocr/common/onnx`请自行查找
+
+##### 使用`PyInstaller`打包
+
+```
+pyinstaller '.\pack.spec'
+```
+
