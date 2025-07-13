@@ -1,4 +1,6 @@
 import re
+import time
+
 from bs4 import BeautifulSoup
 from .session import session, url
 from core.cache import get_cache_flag, set_cache_flag, save_grades_cache, get_grades_cache
@@ -55,7 +57,7 @@ def check():
     main_gpa = re.search(r'主修课程平均学分绩点\s*([0-9.]+)', text_block)
     minor_gpa = re.search(r'辅修课程平均学分绩点\s*([0-9.]+)', text_block)
     gpa_text = f"主修课程平均学分绩点 {main_gpa.group(1) if main_gpa else 'N/A'} ,辅修课程平均学分绩点  {minor_gpa.group(1) if minor_gpa else 'N/A'}"
-
+    print(gpa_text)
     names, urls, scores, credits = [], [], [], []
 
     for row in soup.select('table.Nsb_table tr'):
@@ -95,13 +97,17 @@ def check():
     for name, path, score, credit in zip(names, urls, scores, credits):
         # 使用缓存且命中且总成绩一致 → 直接使用缓存
         if get_cache_flag() and name in cache_data:
+            print("正在读取缓存")
             cached_row = cache_data[name]
-            cached_score = cached_row[-1]  # 默认最后一项是总成绩
+            cached_score = cached_row[-2]  # 默认最后一项是总成绩
             if str(cached_score) == str(score):
+                print(f'缓存命中 {cached_row}')
                 results.append(cached_row)
                 continue  # 跳过查询
 
         # 否则执行查询
+        print(f"正在查询  {url.split('/jsxsd')[0] + path}")
+        time.sleep(0.1)
         detail_resp = session.get(url.split('/jsxsd')[0] + path, headers=headers, verify=False)
         detail_soup = BeautifulSoup(detail_resp.text, 'lxml')
         tds = detail_soup.select('td')
@@ -109,6 +115,7 @@ def check():
         row=row[:9]
         row[1] = credit
         row.append(str(calc_gpa(score)))
+        print(f"查询成功 {row}")
 
         results.append(row)  # 只保留前9项
 

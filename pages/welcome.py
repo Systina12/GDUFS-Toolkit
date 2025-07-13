@@ -15,7 +15,7 @@ def show_welcome():
         navigate.to('/')
 
     info = get_user_info()
-
+    print("checking login...")
     if not info or info == (None, None):
         if auto_reload():
             ui.notify('⚠️ 登录信息已失效，已自动重新登录', type='warning')

@@ -7,7 +7,7 @@ from .user import get_user_info
 # 用于记录当前登录状态和缓存账号信息
 cache_username = ''
 cache_pwd = ''
-login_flag = 1
+login_flag = 0
 
 def auto_reload():
     global cache_username, cache_pwd, login_flag
@@ -30,7 +30,7 @@ def login(username, password):
         "Accept-Language": "zh-CN,zh;q=0.9",
         "Connection": "close"
     }
-    # 你之前的 loginHeader
+
     password = urllib.parse.quote(password)
 
     try:
@@ -47,6 +47,8 @@ def login(username, password):
                 err = response.text.split("<font color=\"red\">")[1].split("</font>")[0]
                 return False, err
             title = BeautifulSoup(response.text, "html.parser").title.string
+            global login_flag
+            login_flag = 1
             return True, title
     except Exception as e:
         return False, str(e)

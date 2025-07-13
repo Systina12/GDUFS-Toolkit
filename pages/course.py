@@ -40,8 +40,6 @@ def show_course():
             table = [[[] for _ in range(7)] for _ in range(max_sections)]
 
             for course in course_list:
-                name = course["课程名"]
-                room = course["教室"]
                 weekday = course["星期"]
                 sections = course.get('节次', [])
                 for sec in sections:
@@ -87,7 +85,7 @@ def show_course():
                                     ).style('min-width:120px'):
                                         if cell:
                                             for course in cell:
-                                                display = f'{course["课程名"]}<br/>@{course["教室"]}'
+                                                display = f'{course.get("课程名", "未分配")}<br/>@{course.get("教室", "未分配")}'
                                                 with ui.html(
                                                         f'<div style="padding:4px;border:1px solid #ddd;border-radius:6px;margin-bottom:4px;cursor:pointer;">{display}</div>'
                                                 ).on('click', lambda e, c=course: show_detail(c)):

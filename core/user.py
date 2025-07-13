@@ -18,7 +18,7 @@ def get_user_info():
     }
 
     page_url = f'{url}/framework/xsMain.jsp'
-    response = session.get(page_url, headers=headers,verify=False)
+    response = session.get(page_url, headers=headers, verify=False)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     target_div = soup.find('div', id='Top1_divLoginName', class_='Nsb_top_menu_nc')

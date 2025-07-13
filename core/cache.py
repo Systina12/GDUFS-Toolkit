@@ -5,7 +5,7 @@ def save_config(config):
     with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
         json.dump(config, f, indent=4, ensure_ascii=False)
 
-# ✅ 自动创建配置文件（如果不存在）
+# 自动创建配置文件（如果不存在）
 def load_config():
     with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)

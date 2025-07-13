@@ -18,18 +18,24 @@ def grades_page():
         if not info or info == (None, None):
             overlay_spinner.visible = False
             if auto_reload():
-                ui.notify('⚠️ 登录信息已失效，已自动重新登录', type='warning')
+                with content:
+                    ui.notify('⚠️ 登录信息已失效，已自动重新登录', type='warning')
             else:
-                ui.notify('⚠️ 登录信息已失效，请手动重新登录', type='warning')
-                auth.login_flag = 0
-                ui.timer(3, lambda: navigate.to('/'))
-                return
+                with content:
+                    ui.notify('⚠️ 登录信息已失效，请手动重新登录', type='warning')
+                    auth.login_flag = 0
+                    ui.timer(3, lambda: navigate.to('/'))
+                    return
 
         try:
             result, gpa = check()
         except Exception as e:
             overlay_spinner.visible = False
-            ui.notify(f'查询失败：{e}', type='negative')
+            with content:
+                with ui.row().classes('mt-6 gap-4'):
+                    ui.button('返回', on_click=lambda: navigate.to('/welcome'))
+                    # ui.button('刷新', on_click=lambda: asyncio.create_task(load_data()))
+                ui.notify(f'查询失败：{e}', type='negative')
             return
 
         content.clear()
@@ -38,7 +44,7 @@ def grades_page():
         with content:
             with ui.row().classes('mt-6 gap-4'):
                 ui.button('返回', on_click=lambda: navigate.to('/welcome'))
-                ui.button('刷新', on_click=lambda: asyncio.create_task(load_data()))
+                # ui.button('刷新', on_click=lambda: asyncio.create_task(load_data()))
 
             ui.label(gpa).classes('text-lg text-gray-700 mb-4')
 
@@ -66,7 +72,6 @@ def grades_page():
     ) as overlay_spinner:
         ui.spinner(size='xl', color='primary')
         ui.label('正在加载成绩数据...').classes('text-gray-600 mt-2 text-lg')
-    overlay_spinner.visible = True  # 初始化时显示 spinner
 
     # 启动加载
     asyncio.create_task(load_data())
