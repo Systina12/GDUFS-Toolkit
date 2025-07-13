@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('E:\\dailyTool\\pythonProject\\.venv\\Lib\\site-packages\\nicegui', 'nicegui'),("onnx/common.onnx",'ddddocr')],
+    datas=[('你的nicegui路径', 'nicegui'),("你的common.onnx路径",'ddddocr')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

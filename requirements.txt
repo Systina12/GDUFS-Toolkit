@@ -1,0 +1,5 @@
+beautifulsoup4~=4.13.4
+ddddocr~=1.0.6
+requests~=2.32.4
+nicegui~=2.21.0
+pywebview~=5.4
