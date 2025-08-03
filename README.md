@@ -17,7 +17,8 @@
 [最新Release下载链接](https://github.com/Systina12/GDUFS-Toolkit/releases/latest)
 
 
-基于 `requests` 和 `ddddocr` 实现了自动登录和查询功能，结合 `NiceGUI` 与 `PyWebview` 构建了简洁友好的图形用户界面。
+
+**如果你发现了BUG或者使用途中出现了一些问题，请联系我或者发送issue。这对我真的很重要。**
 
 ## 功能
 
@@ -32,6 +33,8 @@
 ### 课表查询
 
 普普通通的功能，做了个比教务好看点的UI，按学年-学期查询课程表并显示，点击课程可以展示课程详情。
+
+
 
 ## 使用说明
 
