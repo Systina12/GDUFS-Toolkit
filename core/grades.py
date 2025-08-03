@@ -4,8 +4,7 @@ import time
 from bs4 import BeautifulSoup
 from .session import session, url
 from core.cache import get_cache_flag, set_cache_flag, save_grades_cache, get_grades_cache
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
+
 
 def calc_gpa(score: float) -> float:
     score = float(score)
@@ -35,6 +34,7 @@ def calc_gpa(score: float) -> float:
 
 
 def check():
+
     headers = {
         'Cache-Control': 'max-age=0',
         'Sec-Ch-Ua': '',
@@ -84,19 +84,26 @@ def check():
         except IndexError:
             continue
 
-    results = []
+    print(len(names), len(urls), len(scores), len(credits))
 
+    results = []
+    cache_flag= get_cache_flag()
     # 加载缓存字典：课程名 → 成绩列表
     cache_data = {}
-    if get_cache_flag():
+    if cache_flag:
         for row in get_grades_cache():
             if row and isinstance(row, list):
                 course = row[0]
                 cache_data[course] = row
 
+    loop_time = 0
+    print(zip(names, urls, scores, credits))
+
     for name, path, score, credit in zip(names, urls, scores, credits):
+        loop_time+=1
+        print(loop_time)
         # 使用缓存且命中且总成绩一致 → 直接使用缓存
-        if get_cache_flag() and name in cache_data:
+        if cache_flag and name in cache_data:
             print("正在读取缓存")
             cached_row = cache_data[name]
             cached_score = cached_row[-2]  # 默认最后一项是总成绩
@@ -107,8 +114,15 @@ def check():
 
         # 否则执行查询
         print(f"正在查询  {url.split('/jsxsd')[0] + path}")
-        time.sleep(0.1)
-        detail_resp = session.get(url.split('/jsxsd')[0] + path, headers=headers, verify=False)
+        if get_cache_flag():
+            time.sleep(0.1)
+        try:
+            detail_resp = session.get(url.split('/jsxsd')[0] + path, headers=headers, verify=False,timeout=5)
+        except Exception as e:
+            print(e)
+            detail_resp = session.get(url.split('/jsxsd')[0] + path, headers=headers, verify=False)
+
+
         detail_soup = BeautifulSoup(detail_resp.text, 'lxml')
         tds = detail_soup.select('td')
         row = [name] + [td.text.strip() for td in tds]
@@ -121,8 +135,6 @@ def check():
 
 
     # 保存新缓存
-    executor = ThreadPoolExecutor()
-    # 在 check 函数中异步调用保存函数
-    asyncio.get_event_loop().run_in_executor(executor, save_grades_cache, results)
+    save_grades_cache(results)
 
     return results, gpa_text
