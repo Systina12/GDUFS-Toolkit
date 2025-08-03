@@ -1,11 +1,13 @@
+import asyncio
+
 from nicegui import ui
 from core.auth import login
 from pages.footer import add_footer
 from utils.credential import load_credentials, save_credentials, get_auto_login_flag, set_auto_login_flag
 from nicegui.functions.navigate import navigate
-from core.cache import set_cache_flag,get_cache_flag
+from core.cache import set_cache_flag, get_cache_flag
 
-def show_login_page():
+async def show_login_page():
     # 背景图层，覆盖整个页面
     ui.element('div').classes(
         'absolute inset-0 z-[-1]'
@@ -34,14 +36,13 @@ def show_login_page():
                 use_cache = ui.checkbox('使用缓存加速访问', value=get_cache_flag()).classes()
                 ui.tooltip('一般在校园网内无需启用，外网访问缓慢时才需要开启。开启后会将资源和部分查询结果存在本地，经过校验后直接输出，减少网络需求。')
 
-
             status_label = ui.label('').classes('text-red text-sm mb-2 text-center')
 
             # 自动登录函数，必须放在 status_label 定义之后！
-            def autoLogin():
+            async def autoLogin():
                 for i in range(3):
                     username, password = load_credentials()
-                    success, message = login(username, password)
+                    success, message = await asyncio.to_thread(login, username,password)  # 异步调用登录函数
                     if success:
                         ui.notify(f'✅ 登录成功：{message}', type='positive')
                         status_label.text = ''
@@ -54,7 +55,7 @@ def show_login_page():
                         status_label.text = f'错误：{message}'
                 return
 
-            def on_login():
+            async def on_login():
                 username = username_input.value.strip()
                 password = password_input.value.strip()
 
@@ -64,7 +65,7 @@ def show_login_page():
 
                 status_label.text = '🔄 正在尝试登录...'
 
-                success, message = login(username, password)
+                success, message = await asyncio.to_thread(login, username,password)  # 异步调用登录函数
 
                 if success:
                     ui.notify(f'✅ 登录成功：{message}', type='positive')
@@ -88,6 +89,6 @@ def show_login_page():
 
             # 页面加载完再判断是否自动登录（放在按钮之后）
             if get_auto_login_flag():
-                autoLogin()
+                await asyncio.to_thread(autoLogin)
 
     add_footer()

@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 from nicegui import ui
 from core import auth
@@ -12,7 +13,7 @@ def generate_semesters():
     return [f'{y}-{s}' for y in range(current_year, current_year - 20, -1) for s in [1, 2]]
 
 
-def show_course():
+async def show_course():
     section_times = {
         1: "8:30 - 9:10", 2: "9:10 - 9:50", 3: "10:10 - 10:50", 4: "10:50 - 11:30",
         5: "11:35 - 12:15", 6: "12:30 - 13:10", 7: "13:10 - 13:50", 8: "14:00 - 14:40",
@@ -22,18 +23,9 @@ def show_course():
 
     max_sections = max(section_times.keys())
 
-    info = get_user_info()
-    if not info or info == (None, None):
-        if auto_reload():
-            ui.notify('⚠️ 登录信息已失效，已自动重新登录', type='warning')
-        else:
-            ui.notify('⚠️ 登录信息已失效，请手动重新登录', type='warning')
-            auth.login_flag = 0
-            ui.timer(3, lambda: ui.navigate.to('/'))
-            return
-
     with ui.column().classes('w-full items-center p-4'):
         # 顶部标题 + 返回按钮
+
 
 
         def render_table(course_list, unarrange_course):
@@ -100,6 +92,13 @@ def show_course():
                             'margin-top:8px'):
                         ui.html(f'<b>未安排时间课程：</b> {unarrange_course}')
 
+
+        async def handle_query_click(semester):
+            # 异步执行 get_course，避免阻塞主线程
+            course_data = await asyncio.to_thread(get_course, semester)
+            render_table(*course_data)
+
+
         # 查询按钮
         with ui.row().classes('w-full justify-between items-center mb-4'):
             ui.label('📘 我的课程表').classes('text-3xl font-bold text-blue-700')
@@ -113,7 +112,7 @@ def show_course():
             ).classes('w-48')
             ui.button(
                 '查询',
-                on_click=lambda: render_table(*get_course(semester_select.value))
+                on_click=lambda: handle_query_click(semester_select.value)
             ).classes('mt-2')
 
         table_area = ui.column().classes('w-full mt-4')

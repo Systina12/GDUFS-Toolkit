@@ -1,3 +1,5 @@
+import asyncio
+
 from nicegui import ui
 from nicegui.functions.navigate import navigate
 
@@ -8,21 +10,20 @@ from pages.footer import add_footer
 
 from utils.credential import set_auto_login_flag
 
-def show_welcome():
+async def show_welcome():
     def exit_onclick():
         auth.login_flag = 0
         set_auto_login_flag(False)
         navigate.to('/')
 
-    info = get_user_info()
-    print("checking login...")
+    await asyncio.sleep(0.1)
+    info = await asyncio.to_thread(get_user_info)
     if not info or info == (None, None):
-        if auto_reload():
+        if await asyncio.to_thread(auto_reload):
             ui.notify('⚠️ 登录信息已失效，已自动重新登录', type='warning')
         else:
             ui.notify('⚠️ 登录信息已失效，请手动重新登录', type='warning')
             auth.login_flag = 0
-
             ui.timer(3, lambda: navigate.to('/'))
             return
 
