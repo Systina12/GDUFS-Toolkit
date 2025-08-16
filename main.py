@@ -6,6 +6,7 @@ from pages.welcome import show_welcome
 from pages.grades import grades_page
 from pages.course import show_course
 from pages.schedule import show_schedule
+from pages.footer import VERSION
 import threading
 import webview
 
@@ -41,7 +42,7 @@ def start_nicegui():
     )
 
 def start_gui():
-    webview.create_window('厂内工具箱', f'http://localhost:{free_port}', width=1200, height=800)
+    webview.create_window(f'广外工具箱_{VERSION}', f'http://localhost:{free_port}', width=1200, height=800)
     webview.start()
 
 if __name__ == '__main__':
